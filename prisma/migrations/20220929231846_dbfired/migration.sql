@@ -1,0 +1,27 @@
+-- CreateTable
+CREATE TABLE "List" (
+    "id" SERIAL NOT NULL,
+    "title" TEXT NOT NULL,
+    "createdAt" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "deletedAt" TIMESTAMPTZ,
+
+    CONSTRAINT "List_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Task" (
+    "id" SERIAL NOT NULL,
+    "title" TEXT NOT NULL,
+    "listId" INTEGER NOT NULL,
+    "order" INTEGER NOT NULL,
+    "completed" BOOLEAN DEFAULT false,
+    "createdAt" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "deletedAt" TIMESTAMPTZ,
+
+    CONSTRAINT "Task_pkey" PRIMARY KEY ("id")
+);
+
+-- AddForeignKey
+ALTER TABLE "Task" ADD CONSTRAINT "Task_listId_fkey" FOREIGN KEY ("listId") REFERENCES "List"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

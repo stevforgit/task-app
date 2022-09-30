@@ -1,0 +1,53 @@
+scalar Date
+
+type List {
+    id: Int!
+    title: String!
+    createdAt: Date!
+    updatedAt: Date!
+    deletedAt: Date!
+    tasks: [Task!]
+}
+
+type Task {
+    id: Int!
+    title: String!
+    createdAt: String!
+    updatedAt: String!
+    deletedAt: String!
+    list: List!
+    listId: Int!
+    order: Int!
+}
+
+type ListResult {
+  edges: [List]
+  pageInfo: PageInfo!
+
+}
+
+type PageInfo {
+  totalCount: Int
+  page: Int!
+  pageSize: Int!
+  hasNextPage: Boolean!
+}
+
+input CreateList {
+    title: String
+}
+
+input UpdateList {
+    id: ID!
+    title: String
+}
+
+type Query {
+    lists(page: Int!, pageSize: Int!): ListResult!
+    list(id: ID!) : List
+}
+
+type Mutation {
+    createList(input: CreateList): List!
+    updateList(input: UpdateList): List!
+}
