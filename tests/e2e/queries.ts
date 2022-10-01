@@ -16,3 +16,12 @@ export const GET_LIST_QUERY_WITH_PAGEINFO = `query getPaginatedList($page: Int!,
         }
   }
 }`;
+
+export const CREATE_NEW_LIST_MUTATION = `mutation createList($title: String!) {
+    createList(input:{
+        title:$title
+      }) {
+        id
+        title
+  }
+}`;

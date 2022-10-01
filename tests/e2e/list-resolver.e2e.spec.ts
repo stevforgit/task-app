@@ -3,17 +3,21 @@ import request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { AppModule } from 'src/modules/app.module';
 import { PrismaService } from 'src/services/prisma.service';
-import { setupTestDataset } from './setup';
-import { GET_LIST_QUERY_WITH_PAGEINFO } from './queries';
+import { IDataService, setupTestDataset } from './setup';
+import {
+  CREATE_NEW_LIST_MUTATION,
+  GET_LIST_QUERY_WITH_PAGEINFO,
+} from './queries';
 
 const gql = '/graphql';
 
 export const GET_PAGINATED_LIST = 'getPaginatedList';
+export const CREATE_NEW_LIST = 'createList';
 
 describe('GraphQL ListsResolver (e2e) {Supertest}', () => {
   let app: INestApplication;
   let prisma: PrismaService;
-  let dataService: any;
+  let dataService: IDataService;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -100,6 +104,24 @@ describe('GraphQL ListsResolver (e2e) {Supertest}', () => {
         expect(listData[0].tasks.length).toEqual(3);
         expect(pageInfo.totalCount).toBe(1);
         expect(pageInfo.hasNextPage).toBe(false);
+      });
+  });
+
+  it('should able to a new list', async () => {
+    return request(app.getHttpServer())
+      .post(gql)
+      .send({
+        operationName: CREATE_NEW_LIST,
+        query: CREATE_NEW_LIST_MUTATION,
+        variables: { title: 'test title' },
+      })
+      .expect(200)
+      .expect((res) => {
+        const createdList = res.body.data.createList;
+        expect(createdList).toBeDefined();
+        expect(createdList.id).toBeDefined();
+        expect(createdList.title).toBeDefined();
+        expect(createdList.title).toEqual('test title');
       });
   });
 });

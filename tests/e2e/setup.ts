@@ -1,5 +1,11 @@
 import { PrismaService } from 'src/services/prisma.service';
 
+export interface IDataService {
+  resetData();
+  createMultipleList(title: string, count: number);
+  createListWithTask(title: string, taskCount: number);
+}
+
 export const setupTestDataset = (prisma: PrismaService) => {
   return {
     resetData: async () => {
