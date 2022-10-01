@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Task } from '@prisma/client';
+import { NotFoundError } from '@prisma/client/runtime';
 import { CreateTaskInput } from 'src/graphql/dto/createTask.input';
 import { MoveTaskInput } from 'src/graphql/dto/moveTask.input';
 import { UpdateTaskInput } from 'src/graphql/dto/updateTask.input';
@@ -44,6 +45,12 @@ export class TasksService {
 
   async updateTask(data: UpdateTaskInput): Promise<Task> {
     const { id, title, completed } = data;
+    const task = await this.prismaService.task.findUnique({
+      where: { id: id },
+    });
+    if (task === null) {
+      throw new NotFoundException('Task not found!');
+    }
     return this.prismaService.task.update({
       where: {
         id: id,

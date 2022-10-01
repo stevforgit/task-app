@@ -11,16 +11,6 @@ export class ListsService {
     const listResult = this.prismaService.list.findMany({
       include: {
         tasks: {
-          select: {
-            id: true,
-            title: true,
-            order: true,
-            listId: true,
-            createdAt: true,
-            updatedAt: true,
-            deletedAt: true,
-            completed: true,
-          },
           orderBy: {
             order: 'asc',
           },
