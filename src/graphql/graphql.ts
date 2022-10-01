@@ -67,8 +67,8 @@ export interface IQuery {
 
 export interface IMutation {
     createList(input?: Nullable<CreateList>): List | Promise<List>;
-    updateTask(input?: Nullable<UpdateTask>): Task | Promise<Task>;
     createTask(input?: Nullable<CreateTask>): Task | Promise<Task>;
+    updateTask(input?: Nullable<UpdateTask>): Task | Promise<Task>;
     moveTask(input?: Nullable<MoveTask>): Task | Promise<Task>;
 }
 

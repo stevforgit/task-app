@@ -38,29 +38,10 @@ input CreateList {
     title: String
 }
 
-input UpdateTask {
-    id: Int
-    title: String!
-    completed: Boolean!
-}
-
-input CreateTask {
-    listId: Int
-    title: String
-}
-
-input MoveTask {
-    taskId: Int
-    position: Int
-}
-
 type Query {
     getPaginatedList(page: Int!, pageSize: Int!): ListResult!
 }
 
 type Mutation {
     createList(input: CreateList): List!
-    updateTask(input: UpdateTask): Task!
-    createTask(input: CreateTask): Task!
-    moveTask(input: MoveTask): Task!
 }
