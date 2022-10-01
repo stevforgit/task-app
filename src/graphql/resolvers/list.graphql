@@ -12,22 +12,23 @@ type List {
 type Task {
     id: Int!
     title: String!
-    createdAt: String!
-    updatedAt: String!
-    deletedAt: String!
+    createdAt: Date!
+    updatedAt: Date!
+    deletedAt: Date!
     list: List!
     listId: Int!
     order: Int!
+    completed: Boolean!
 }
 
 type ListResult {
-  edges: [List]
+  lists: [List!]
   pageInfo: PageInfo!
 
 }
 
 type PageInfo {
-  totalCount: Int
+  totalCount: Int!
   page: Int!
   pageSize: Int!
   hasNextPage: Boolean!
@@ -37,17 +38,29 @@ input CreateList {
     title: String
 }
 
-input UpdateList {
-    id: ID!
+input UpdateTask {
+    id: Int
+    title: String!
+    completed: Boolean!
+}
+
+input CreateTask {
+    listId: Int
     title: String
 }
 
+input MoveTask {
+    taskId: Int
+    position: Int
+}
+
 type Query {
-    lists(page: Int!, pageSize: Int!): ListResult!
-    list(id: ID!) : List
+    getPaginatedList(page: Int!, pageSize: Int!): ListResult!
 }
 
 type Mutation {
     createList(input: CreateList): List!
-    updateList(input: UpdateList): List!
+    updateTask(input: UpdateTask): Task!
+    createTask(input: CreateTask): Task!
+    moveTask(input: MoveTask): Task!
 }
