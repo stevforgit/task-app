@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common/decorators';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ListsService } from 'src/services/lists.service';
-import { GetListArgs } from 'src/graphql/dto/getList.args';
+import { GetListArgs, PagedResult } from 'src/graphql/dto/getList.args';
 import { List, ListResult } from 'src/graphql/graphql';
 import { CreateListInput } from '../dto/createList.input';
 
@@ -11,17 +11,12 @@ export class ListsResolver {
   constructor(private readonly listsService: ListsService) {}
 
   @Query('getPaginatedList')
-  async getPaginatedList(@Args() args: GetListArgs): Promise<ListResult> {
+  async getPaginatedList(@Args() args: GetListArgs): Promise<PagedResult> {
     const data = await this.listsService.findAll(args.page, args.pageSize);
-    const totalCount = await this.listsService.getTotalCount();
+    // const totalCount = await this.listsService.getTotalCount();
     const result = {
-      lists: data,
-      pageInfo: {
-        totalCount: totalCount,
-        page: args?.page,
-        pageSize: args?.pageSize,
-        hasNextPage: totalCount - args.page * args.pageSize > 0,
-      },
+      lists: data.listResult,
+      pageInfo: data.pageInfo,
     };
     return result;
   }

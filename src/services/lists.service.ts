@@ -7,7 +7,7 @@ import { PrismaService } from './prisma.service';
 export class ListsService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async findAll(page: number, pageSize: number): Promise<List[] | null> {
+  async findAll(page = 1, pageSize = 10) {
     const listResult = await this.prismaService.list.findMany({
       where: {
         deletedAt: null,
@@ -25,7 +25,14 @@ export class ListsService {
       skip: (page > 0 ? page - 1 : 0) * pageSize,
       take: pageSize,
     });
-    return listResult;
+    const totalCount = await this.getTotalCount();
+    const pageInfo = {
+      totalCount: totalCount,
+      page: page,
+      pageSize: pageSize,
+      hasNextPage: totalCount - page * pageSize > 0,
+    };
+    return { listResult, pageInfo };
   }
 
   async createList(data: CreateListInput): Promise<List> {

@@ -37,7 +37,7 @@ input CreateList {
 }
 
 type Query {
-    getPaginatedList(page: Int!, pageSize: Int!): ListResult!
+    getPaginatedList(page: Int, pageSize: Int): ListResult!
 }
 
 type Mutation {

@@ -60,7 +60,7 @@ export interface PageInfo {
 }
 
 export interface IQuery {
-    getPaginatedList(page: number, pageSize: number): ListResult | Promise<ListResult>;
+    getPaginatedList(page?: Nullable<number>, pageSize?: Nullable<number>): ListResult | Promise<ListResult>;
 }
 
 export interface IMutation {
