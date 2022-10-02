@@ -24,12 +24,7 @@ This project is build using Nestjs framework, GraphQL & Prisma ORM with PostgreS
  $ npm run migrate:dev
 ```
 
-#  5.  Run database migration
-```bash
- $ npm run migrate:dev
-```
-
-#  6.  Start app server
+#  5.  Start app server
 ```bash
  $ npm run start
 ```
