@@ -4,20 +4,15 @@
   "description": "",
   "license": "MIT",
   "scripts": {
-    "db:start": "./src/scripts/start_db.sh",
-    "db:stop": "docker stop evlp-postgres",
-    "start": "nest start",
+    "start": "dotenv -e .env.development -- npx nest start",
     "prebuild": "rimraf dist",
     "start:prod": "node dist/src/main",
     "build": "nest build",
     "format": "prettier --write \"**/*.ts\" \"src/**/*.ts\" \"tests/**/*.ts\"",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "migrate": "prisma migrate dev",
-    "generate": "prisma generate"
+    "migrate:dev": "dotenv -e .env.development -- npx prisma migrate dev --name init-db",
+    "generate": "prisma generate",
+    "test:e2e": "dotenv -e .env.test -- npx prisma migrate dev --name init-db && jest -i"
   },
   "dependencies": {
     "@nestjs/apollo": "^10.1.0",
