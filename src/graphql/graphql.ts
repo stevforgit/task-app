@@ -9,7 +9,7 @@
 /* eslint-disable */
 
 export interface CreateList {
-    title?: Nullable<string>;
+    title: string;
 }
 
 export interface UpdateTask {

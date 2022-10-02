@@ -33,7 +33,7 @@ type PageInfo {
 }
 
 input CreateList {
-    title: String
+    title: String!
 }
 
 type Query {
