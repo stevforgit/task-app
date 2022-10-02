@@ -23,5 +23,33 @@ export const CREATE_NEW_LIST_MUTATION = `mutation createList($title: String!) {
       }) {
         id
         title
+        createdAt
+        updatedAt
+  }
+}`;
+
+export const ADD_TASK_TO_LIST_MUTATION = `
+mutation addTaskToList($listId: Int!, $title: String!) {
+  createTask(input:{
+    listId:$listId, title:$title
+  })
+  {
+    id
+    title
+    order
+    completed
+  }
+}`;
+
+export const UPDATE_TASK_MUTATION = `
+mutation updateTask($id: Int, $title: String!, $completed: Boolean!) {
+  updateTask(input:{
+    id:$id, title:$title, completed: $completed
+  })
+  {
+    id
+    title
+    order
+    completed
   }
 }`;
