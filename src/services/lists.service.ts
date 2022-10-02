@@ -7,10 +7,16 @@ import { PrismaService } from './prisma.service';
 export class ListsService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  findAll(page: number, pageSize: number): Promise<List[] | null> {
-    const listResult = this.prismaService.list.findMany({
+  async findAll(page: number, pageSize: number): Promise<List[] | null> {
+    const listResult = await this.prismaService.list.findMany({
+      where: {
+        deletedAt: null,
+      },
       include: {
         tasks: {
+          where: {
+            deletedAt: null,
+          },
           orderBy: {
             order: 'asc',
           },
@@ -29,6 +35,10 @@ export class ListsService {
   }
 
   async getTotalCount() {
-    return this.prismaService.list.count();
+    return this.prismaService.list.count({
+      where: {
+        deletedAt: null,
+      },
+    });
   }
 }
