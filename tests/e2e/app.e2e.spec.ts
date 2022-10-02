@@ -9,7 +9,6 @@ import {
   GET_LIST_QUERY_WITH_PAGEINFO,
   ADD_TASK_TO_LIST_MUTATION,
   UPDATE_TASK_MUTATION,
-
 } from './queries';
 
 const gql = '/graphql';
@@ -223,5 +222,4 @@ describe('GraphQL (e2e) {Supertest}', () => {
         expect(res.body.data).toBeNull();
       });
   });
-
 });

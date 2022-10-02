@@ -13,19 +13,19 @@ export interface CreateList {
 }
 
 export interface UpdateTask {
-    id?: Nullable<number>;
-    title: string;
-    completed: boolean;
+    id: number;
+    title?: Nullable<string>;
+    completed?: Nullable<boolean>;
 }
 
 export interface CreateTask {
-    listId?: Nullable<number>;
-    title?: Nullable<string>;
+    listId: number;
+    title: string;
 }
 
 export interface MoveTask {
-    taskId?: Nullable<number>;
-    position?: Nullable<number>;
+    taskId: number;
+    position: number;
 }
 
 export interface List {

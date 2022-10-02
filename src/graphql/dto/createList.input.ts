@@ -1,8 +1,8 @@
 import { ArgsType } from '@nestjs/graphql';
-import { MaxLength } from 'class-validator';
+import { Length } from 'class-validator';
 
 @ArgsType()
 export class CreateListInput {
-  @MaxLength(100)
+  @Length(1, 200)
   readonly title: string;
 }

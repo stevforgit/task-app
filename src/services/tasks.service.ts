@@ -31,6 +31,10 @@ export class TasksService {
       },
     });
 
+    if (list === null) {
+      throw new NotFoundException('List id not found!');
+    }
+
     if (list.tasks.length > 0) {
       const taskIds = list.tasks.map((task) => task.id);
 

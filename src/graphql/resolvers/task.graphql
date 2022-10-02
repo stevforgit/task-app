@@ -11,19 +11,19 @@ type Task {
 }
 
 input UpdateTask {
-    id: Int
-    title: String!
-    completed: Boolean!
+    id: Int!
+    title: String
+    completed: Boolean
 }
 
 input CreateTask {
-    listId: Int
-    title: String
+    listId: Int!
+    title: String!
 }
 
 input MoveTask {
-    taskId: Int
-    position: Int
+    taskId: Int!
+    position: Int!
 }
 
 type Mutation {

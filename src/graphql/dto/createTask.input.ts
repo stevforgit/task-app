@@ -1,5 +1,5 @@
 import { ArgsType } from '@nestjs/graphql';
-import { IsBoolean, IsInt, IsNotEmpty, MaxLength } from 'class-validator';
+import { IsInt, IsNotEmpty, Length } from 'class-validator';
 
 @ArgsType()
 export class CreateTaskInput {
@@ -7,6 +7,6 @@ export class CreateTaskInput {
   @IsInt()
   readonly listId: number;
 
-  @MaxLength(100)
+  @Length(1, 200)
   readonly title?: string;
 }

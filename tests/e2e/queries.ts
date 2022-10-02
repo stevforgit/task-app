@@ -42,7 +42,7 @@ mutation addTaskToList($listId: Int!, $title: String!) {
 }`;
 
 export const UPDATE_TASK_MUTATION = `
-mutation updateTask($id: Int, $title: String!, $completed: Boolean!) {
+mutation updateTask($id: Int!, $title: String, $completed: Boolean) {
   updateTask(input:{
     id:$id, title:$title, completed: $completed
   })
