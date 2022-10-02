@@ -4,7 +4,6 @@ type Task {
     title: String!
     createdAt: Date!
     updatedAt: Date!
-    deletedAt: Date!
     list: List!
     listId: Int!
     order: Int!
