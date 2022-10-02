@@ -1,6 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Task } from '@prisma/client';
-import { NotFoundError } from '@prisma/client/runtime';
 import { CreateTaskInput } from 'src/graphql/dto/createTask.input';
 import { MoveTaskInput } from 'src/graphql/dto/moveTask.input';
 import { UpdateTaskInput } from 'src/graphql/dto/updateTask.input';
@@ -12,16 +16,12 @@ export class TasksService {
 
   async createTask(data: CreateTaskInput): Promise<Task> {
     const { listId, title } = data;
-    const list = await this.prismaService.list.findUnique({
-      where: {
-        id: listId,
-      },
+    const list = await this.prismaService.list.findFirst({
+      where: { AND: [{ id: listId, deletedAt: null }] },
       include: {
         tasks: {
-          select: {
-            id: true,
-            order: true,
-            listId: true,
+          where: {
+            deletedAt: null,
           },
           orderBy: {
             order: 'asc',
@@ -45,12 +45,7 @@ export class TasksService {
 
   async updateTask(data: UpdateTaskInput): Promise<Task> {
     const { id, title, completed } = data;
-    const task = await this.prismaService.task.findUnique({
-      where: { id: id },
-    });
-    if (task === null) {
-      throw new NotFoundException('Task not found!');
-    }
+    await this.getTaskByIdOrThrow(id);
     return this.prismaService.task.update({
       where: {
         id: id,
@@ -64,17 +59,14 @@ export class TasksService {
 
   async moveTask(data: MoveTaskInput): Promise<Task> {
     const { taskId, position } = data;
-    const task = await this.prismaService.task.findFirstOrThrow({
-      where: { id: taskId },
-    });
+    const task = await this.getTaskByIdOrThrow(taskId);
 
-    const list = await this.prismaService.list.findFirstOrThrow({
-      where: { id: task.listId },
+    const list = await this.prismaService.list.findFirst({
+      where: { AND: [{ id: task.listId, deletedAt: null }] },
       include: {
         tasks: {
-          select: {
-            id: true,
-            order: true,
+          where: {
+            deletedAt: null,
           },
           orderBy: {
             order: 'asc',
@@ -83,38 +75,54 @@ export class TasksService {
       },
     });
 
-    const availablePositions = list.tasks.map((r) => r.order);
-    const maxPosition = Math.max(...availablePositions);
-    // check if move is valid
-    if (position > 0 && position <= maxPosition) {
-      const bottomToTop = task.order > position;
-      if (bottomToTop) {
+    // check if position is within range
+    if (this.checkIfMoveIsValid(list.tasks, position)) {
+      if (task.order > position) {
         const tasks = list.tasks.filter(
-          (r) => r.order >= position && r.order < task.order,
+          (tsk) => tsk.order >= position && tsk.order < task.order,
         );
 
         await this.prismaService.$transaction([
           this.prismaService.task.updateMany({
-            where: { id: { in: tasks.map((r) => r.id) } },
+            where: { id: { in: tasks.map((tsk) => tsk.id) } },
             data: { order: { increment: 1 } },
           }),
         ]);
       } else {
         const tasks = list.tasks.filter(
-          (r) => r.order > task.order && r.order <= position,
+          (tsk) => tsk.order > task.order && tsk.order <= position,
         );
         await this.prismaService.$transaction([
           this.prismaService.task.updateMany({
-            where: { id: { in: tasks.map((r) => r.id) } },
+            where: { id: { in: tasks.map((tsk) => tsk.id) } },
             data: { order: { decrement: 1 } },
           }),
         ]);
       }
+      return this.prismaService.task.update({
+        where: { id: taskId },
+        data: { order: position },
+      });
     }
+    throw new HttpException(
+      'Position is not within range!',
+      HttpStatus.BAD_REQUEST,
+    );
+  }
 
-    return this.prismaService.task.update({
-      where: { id: taskId },
-      data: { order: position },
+  async getTaskByIdOrThrow(taskId: number) {
+    const task = await this.prismaService.task.findFirst({
+      where: { AND: [{ id: taskId, deletedAt: null }] },
     });
+    if (task === null) {
+      throw new NotFoundException('Task not found!');
+    }
+    return task;
+  }
+
+  private checkIfMoveIsValid(tasks, position: number): boolean {
+    const availablePositions = tasks.map((r) => r.order);
+    const maxPosition = Math.max(...availablePositions);
+    return position > 0 && position <= maxPosition;
   }
 }
